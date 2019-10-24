@@ -22,7 +22,7 @@ RUN wget https://observer.gsfc.nasa.gov/ftp/edhs/hdfeos/latest_release/hdf-4.2.1
     tar zxvf hdf-4.2.13.tar.gz; \
     cd hdf-4.2.13; \
     ./configure --prefix=/usr/local/ --disable-netcdf; \
-    make && make install; \
+    make && make check && make install; \
     cd ..; \
     rm -rf /hdf-4.2.13 /hdf-4.2.13.tar.gz 
 
@@ -31,7 +31,7 @@ RUN wget https://observer.gsfc.nasa.gov/ftp/edhs/hdfeos/previous_releases/HDF-EO
     tar zxvf HDF-EOS2.19v1.00.tar.Z; \
     cd hdfeos; \
     ./configure --prefix=/usr/local/ --enable-install-include --with-hdf4=/usr/local; \
-    make && make install; \
+    make && make check && make install; \
     cd ..; \
     rm -rf /hdfeos /HDF-EOS2.19v1.00.tar.Z 
 
@@ -40,7 +40,7 @@ RUN wget https://observer.gsfc.nasa.gov/ftp/edhs/hdfeos5/latest_release/hdf5-1.8
     tar zxvf hdf5-1.8.19.tar.gz; \
     cd hdf5-1.8.19; \
     ./configure --prefix=/usr/local/; \
-    make && make install; \
+    make && make check && make install; \
     cd ..; \
     rm -rf /hd5f-1.8.19 /hdf5-1.8.19.tar.gz
 
@@ -53,6 +53,8 @@ RUN NETCDF_C_VERSION="4.4.1.1" \
     && cd /tmp/netcdf-${NETCDF_C_VERSION} \
     && make \
     && cd /tmp/netcdf-${NETCDF_C_VERSION} \
+    && make check \
+    && cd /tmp/netcdf-${NETCDF_C_VERSION} \
     && make install \
     && rm -rf /tmp/netcdf-${NETCDF_C_VERSION}
 
@@ -62,7 +64,7 @@ RUN wget http://hdfeos.org/software/h4cflib/h4cflib_1.2.tar.gz; \
     tar zxvf h4cflib_1.2.tar.gz; \
     cd h4cflib_1.2; \
     ./configure --prefix=/usr/local/ --with-hdf4=/usr/local/ --with-hdfeos2=/usr/local/ --with-netcdf=/usr/local/; \
-    make && make install; \
+    make && make check && make install; \
     cd ..; \
     rm -rf /h4cflib_1.2 /hf4cflib_1.2.tar.gz
 
