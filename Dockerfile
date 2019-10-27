@@ -60,3 +60,5 @@ RUN wget http://hdfeos.org/software/h4cflib/h4cflib_${H4CF_VER}.tar.gz; \
     make && make install; \
     cd ..; \
     rm -rf /h4cflib_${H4CF_VER} /hf4cflib_${H4CF_VER}.tar.gz
+
+ENV LD_LIBRARY_PATH /usr/local/lib
