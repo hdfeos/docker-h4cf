@@ -52,9 +52,6 @@ RUN NETCDF_C_VERSION="4.4.1.1" \
     && CPPFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib ./configure --prefix=/usr/local \
     && cd /tmp/netcdf-${NETCDF_C_VERSION} \
     && make \
-    && cd /tmp/netcdf-${NETCDF_C_VERSION} \
-    && make check \
-    && cd /tmp/netcdf-${NETCDF_C_VERSION} \
     && make install \
     && rm -rf /tmp/netcdf-${NETCDF_C_VERSION}
 
