@@ -43,7 +43,7 @@ ARG NETCDF_C_VER=4.4.1.1
 RUN wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-${NETCDF_C_VER}.tar.gz -P /tmp \
     && tar -xf /tmp/netcdf-${NETCDF_C_VER}.tar.gz -C /tmp \
     && cd /tmp/netcdf-${NETCDF_C_VER} \
-    && CPPFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib LD_LIBRARY_PATH=-L/usr/local/lib ./configure --prefix=/usr/local \
+    && CPPFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib LD_LIBRARY_PATH=-L/usr/local/lib ./configure --prefix=/usr/local --enable-shared \
     && cd /tmp/netcdf-${NETCDF_C_VER} \
     && make \
     && cd /tmp/netcdf-${NETCDF_C_VER} \
