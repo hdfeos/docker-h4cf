@@ -43,7 +43,7 @@ ARG NETCDF_C_VER=4.4.1.1
 RUN wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-${NETCDF_C_VER}.tar.gz -P /tmp \
     && tar -xf /tmp/netcdf-${NETCDF_C_VER}.tar.gz -C /tmp \
     && cd /tmp/netcdf-${NETCDF_C_VER} \
-    && CPPFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib ./configure --prefix=/usr/local \
+    && CPPFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib LD_LIBRARY_PATH=-L/usr/local/lib ./configure --prefix=/usr/local \
     && cd /tmp/netcdf-${NETCDF_C_VER} \
     && make \
     && cd /tmp/netcdf-${NETCDF_C_VER} \
@@ -54,7 +54,8 @@ RUN wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-${NETCDF_C_VER}.tar.gz -P 
 ARG H4CF_VER=1.2
 RUN wget http://hdfeos.org/software/h4cflib/h4cflib_${H4CF_VER}.tar.gz; \
     tar zxvf h4cflib_${H4CF_VER}.tar.gz; \
-    cd h4cflib_${H4CF_VER}; \
+    cd h4cflib_${H4CF_VER} \
+    && CPPFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib LD_LIBRARY_PATH=-L/usr/local/lib \
     ./configure --prefix=/usr/local/ --with-hdf4=/usr/local/ --with-hdfeos2=/usr/local/ --with-netcdf=/usr/local/; \
     make && make install; \
     cd ..; \
