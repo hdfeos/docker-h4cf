@@ -1,0 +1,12 @@
+gcc
+build-essential
+curl
+wget
+bzip2
+tar
+libghc-zlib-dev
+libjpeg-dev
+gfortran
+bison
+flex
+file
