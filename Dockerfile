@@ -4,64 +4,59 @@ MAINTAINER The HDF-EOS Tools and Information Center <eoshelp@hdfgroup.org>
 
 ENV HOME /root
 
-RUN apt-get update
-RUN apt-get -yq install gcc \
-                        build-essential \
-                        wget \
-                        bzip2 \
-                        tar \
-                        libghc-zlib-dev \
-                        libjpeg-dev \
-                        gfortran \
-                        bison \
-                        flex \
-                        file
+COPY ["./apt.txt", "./"]
 
-#Build HDF4
-RUN wget https://observer.gsfc.nasa.gov/ftp/edhs/hdfeos/latest_release/hdf-4.2.13.tar.gz; \
-    tar zxvf hdf-4.2.13.tar.gz; \
-    cd hdf-4.2.13; \
+RUN apt update && apt install -yq $(grep -vE "^\s*#" ./apt.txt)
+
+#Build HDF4 lib.
+ARG HDF4_VER=4.2.13
+RUN wget https://observer.gsfc.nasa.gov/ftp/edhs/hdfeos/latest_release/hdf-${HDF4_VER}.tar.gz; \
+    tar zxvf hdf-${HDF4_VER}.tar.gz; \
+    cd hdf-${HDF4_VER}; \
     ./configure --prefix=/usr/local/ --disable-netcdf; \
     make && make check && make install; \
     cd ..; \
-    rm -rf /hdf-4.2.13 /hdf-4.2.13.tar.gz 
+    rm -rf /hdf-${HDF4_VER} /hdf-${HDF4_VER}.tar.gz 
 
-#Build HDF-EOS2
-RUN wget https://observer.gsfc.nasa.gov/ftp/edhs/hdfeos/previous_releases/HDF-EOS2.19v1.00.tar.Z; \
-    tar zxvf HDF-EOS2.19v1.00.tar.Z; \
+#Build HDF-EOS2 lib.
+ARG HDFEOS_VER=2.19v1.00
+RUN wget https://observer.gsfc.nasa.gov/ftp/edhs/hdfeos/previous_releases/HDF-EOS${HDFEOS_VER}.tar.Z; \
+    tar zxvf HDF-EOS${HDFEOS_VER}.tar.Z; \
     cd hdfeos; \
     ./configure --prefix=/usr/local/ --enable-install-include --with-hdf4=/usr/local; \
     make && make check && make install; \
     cd ..; \
-    rm -rf /hdfeos /HDF-EOS2.19v1.00.tar.Z 
+    rm -rf /hdfeos /HDF-EOS${HDFEOS_VER}.tar.Z 
 
-# Build HDF5
-RUN wget https://observer.gsfc.nasa.gov/ftp/edhs/hdfeos5/latest_release/hdf5-1.8.19.tar.gz; \
-    tar zxvf hdf5-1.8.19.tar.gz; \
-    cd hdf5-1.8.19; \
+# Build HDF5 lib.
+ARG HDF5_VER=5-1.8.19
+RUN wget https://observer.gsfc.nasa.gov/ftp/edhs/hdfeos5/latest_release/hdf${HDF5_VER}.tar.gz; \
+    tar zxvf hdf${HDF5_VER}.tar.gz; \
+    cd hdf${HDF5_VER}; \
     ./configure --prefix=/usr/local/; \
     make && make check && make install; \
     cd ..; \
-    rm -rf /hd5f-1.8.19 /hdf5-1.8.19.tar.gz
+    rm -rf /hdf${HDF5_VER}/hdf${HDF5_VER}.tar.gz
 
-# Build netCDF.
-RUN NETCDF_C_VERSION="4.4.1.1" \
-    && wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-${NETCDF_C_VERSION}.tar.gz -P /tmp \
-    && tar -xf /tmp/netcdf-${NETCDF_C_VERSION}.tar.gz -C /tmp \
-    && cd /tmp/netcdf-${NETCDF_C_VERSION} \
-    && CPPFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib ./configure --prefix=/usr/local \
-    && cd /tmp/netcdf-${NETCDF_C_VERSION} \
+# Build netCDF C lib.
+ARG NETCDF_C_VER=4.4.1.1
+RUN wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-${NETCDF_C_VER}.tar.gz -P /tmp \
+    && tar -xf /tmp/netcdf-${NETCDF_C_VER}.tar.gz -C /tmp \
+    && cd /tmp/netcdf-${NETCDF_C_VER} \
+    && CPPFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib LD_LIBRARY_PATH=-L/usr/local/lib ./configure --prefix=/usr/local --enable-shared \
+    && cd /tmp/netcdf-${NETCDF_C_VER} \
     && make \
+    && cd /tmp/netcdf-${NETCDF_C_VER} \
     && make install \
-    && rm -rf /tmp/netcdf-${NETCDF_C_VERSION}
+    && rm -rf /tmp/netcdf-${NETCDF_C_VER}
 
 # Build H4CF Conversion Toolkit
-
-RUN wget http://hdfeos.org/software/h4cflib/h4cflib_1.2.tar.gz; \
-    tar zxvf h4cflib_1.2.tar.gz; \
-    cd h4cflib_1.2; \
+ARG H4CF_VER=1.2
+RUN wget http://hdfeos.org/software/h4cflib/h4cflib_${H4CF_VER}.tar.gz; \
+    tar zxvf h4cflib_${H4CF_VER}.tar.gz; \
+    cd h4cflib_${H4CF_VER} \
+    && CPPFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib LD_LIBRARY_PATH=-L/usr/local/lib \
     ./configure --prefix=/usr/local/ --with-hdf4=/usr/local/ --with-hdfeos2=/usr/local/ --with-netcdf=/usr/local/; \
-    make && make check && make install; \
+    make && make install; \
     cd ..; \
-    rm -rf /h4cflib_1.2 /hf4cflib_1.2.tar.gz
-
+    rm -rf /h4cflib_${H4CF_VER} /hf4cflib_${H4CF_VER}.tar.gz
