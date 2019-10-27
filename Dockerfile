@@ -48,7 +48,7 @@ RUN wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-${NETCDF_C_VER}.tar.gz -P 
     && make \
     && cd /tmp/netcdf-${NETCDF_C_VER} \
     && make install \
-    && rm -rf /tmp/netcdf-${NETCDF_C_VER}
+    && rm -rf /tmp/netcdf-${NETCDF_C_VER}.tar.gz
 
 # Build H4CF Conversion Toolkit
 ARG H4CF_VER=1.2
